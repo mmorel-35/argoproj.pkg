@@ -9,8 +9,8 @@ import (
 	"github.com/evilmonkeyinc/jsonpath"
 )
 
-func GetExprEnvFunctionMap() map[string]interface{} {
-	return map[string]interface{}{
+func GetExprEnvFunctionMap() map[string]any {
+	return map[string]any{
 		"asInt":    AsInt,
 		"asFloat":  AsFloat,
 		"string":   AsStr,
@@ -18,12 +18,12 @@ func GetExprEnvFunctionMap() map[string]interface{} {
 	}
 }
 
-func AsStr(val interface{}) interface{} {
+func AsStr(val any) any {
 	return fmt.Sprintf("%v", val)
 }
 
-func JsonPath(jsonStr string, path string) interface{} {
-	var jsonMap interface{}
+func JsonPath(jsonStr string, path string) any {
+	var jsonMap any
 	err := json.Unmarshal([]byte(jsonStr), &jsonMap)
 	if err != nil {
 		panic(err)
@@ -35,7 +35,7 @@ func JsonPath(jsonStr string, path string) interface{} {
 	return value
 }
 
-func AsInt(in interface{}) int64 {
+func AsInt(in any) int64 {
 	switch i := in.(type) {
 	case float64:
 		return int64(i)
@@ -71,7 +71,7 @@ func AsInt(in interface{}) int64 {
 	panic(fmt.Sprintf("asInt() not supported on %v %v", reflect.TypeOf(in), in))
 }
 
-func AsFloat(in interface{}) float64 {
+func AsFloat(in any) float64 {
 	switch i := in.(type) {
 	case float64:
 		return i

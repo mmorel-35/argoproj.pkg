@@ -1,10 +1,70 @@
 # https://golangci-lint.run/usage/quick-start/
-run:
-  concurrency: 4
-  timeout: 5m
 issues:
-  exclude-dirs:
-    - vendor
+  max-issues-per-linter: 0
+  max-same-issues: 0
+linters:
+  enable:
+    - revive
 linters-settings:
   goimports:
     local-prefixes: github.com/argoproj/pkg
+  revive:
+    # https://github.com/mgechev/revive/blob/master/RULES_DESCRIPTIONS.md
+    rules:
+      - name: bool-literal-in-expr
+      - name: blank-imports
+      - name: context-as-argument
+        arguments:
+          - allowTypesBefore: '*testing.T,testing.TB'
+      - name: context-keys-type
+      - name: dot-imports
+      - name: duplicated-imports
+      - name: early-return
+        arguments:
+          - 'preserveScope'
+      - name: empty-block
+      - name: error-naming
+      - name: error-return
+      - name: error-strings
+        disabled: true
+      - name: errorf
+      - name: identical-branches
+      - name: if-return
+      - name: increment-decrement
+      - name: indent-error-flow
+        disabled: true
+        arguments:
+          - 'preserveScope'
+      - name: modifies-parameter
+      - name: optimize-operands-order
+      - name: range
+      - name: receiver-naming
+      - name: redefines-builtin-id
+        disabled: true
+      - name: redundant-import-alias
+      - name: superfluous-else
+        disabled: true
+        arguments:
+          - 'preserveScope'
+      - name: time-equal
+      - name: time-naming
+      - name: unexported-return
+      - name: unnecessary-stmt
+        disabled: true
+      - name: unreachable-code
+      - name: unused-parameter
+        disabled: true
+      - name: use-any
+      - name: useless-break
+      - name: var-declaration
+      - name: var-naming
+        disabled: true
+        arguments:
+          - ["ID"]
+          - ["VM"]
+          - - skipPackageNameChecks: true
+              upperCaseConst: true
+
+run:
+  concurrency: 4
+  timeout: 5m

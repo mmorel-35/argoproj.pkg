@@ -108,7 +108,7 @@ func handleCreate(r *http.Request) ResourceInfo {
 		log.WithField("Kind", kind).Warnf("Unable to Process Create request: %v", err)
 		return ResourceInfo{}
 	}
-	var obj map[string]interface{}
+	var obj map[string]any
 	err = json.Unmarshal(body, &obj)
 	if err != nil {
 		log.WithField("Kind", kind).Warnf("Unable to Process Create request: %v", err)

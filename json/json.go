@@ -16,7 +16,7 @@ func DisallowUnknownFields(d *json.Decoder) *json.Decoder {
 type JSONOpt func(*json.Decoder) *json.Decoder
 
 // Unmarshal is a convenience wrapper around json.Unmarshal to support json decode options
-func Unmarshal(j []byte, o interface{}, opts ...JSONOpt) error {
+func Unmarshal(j []byte, o any, opts ...JSONOpt) error {
 	d := json.NewDecoder(bytes.NewReader(j))
 	for _, opt := range opts {
 		d = opt(d)
@@ -25,7 +25,7 @@ func Unmarshal(j []byte, o interface{}, opts ...JSONOpt) error {
 }
 
 // UnmarshalStrict is a convenience wrapper around json.Unmarshal with strict unmarshal options
-func UnmarshalStrict(j []byte, o interface{}) error {
+func UnmarshalStrict(j []byte, o any) error {
 	return Unmarshal(j, o, DisallowUnknownFields)
 }
 

@@ -17,13 +17,13 @@ import (
 )
 
 type messageMarshaler struct {
-	fields         map[string]interface{}
+	fields         map[string]any
 	exclude        bool
 	isSSE          bool
 	fieldProcessor FieldProcessor
 }
 
-func (m *messageMarshaler) Unmarshal(data []byte, v interface{}) error {
+func (m *messageMarshaler) Unmarshal(data []byte, v any) error {
 	return nil
 }
 
@@ -44,9 +44,9 @@ func (m *messageMarshaler) ContentType() string {
 }
 
 // FieldProcessor is a function that handles included/excluded fields
-type FieldProcessor func(val interface{}, fields map[string]interface{}, exclude bool) (interface{}, error)
+type FieldProcessor func(val any, fields map[string]any, exclude bool) (any, error)
 
-func (m *messageMarshaler) Marshal(v interface{}) ([]byte, error) {
+func (m *messageMarshaler) Marshal(v any) ([]byte, error) {
 	var dataBytes []byte
 	var err error
 
@@ -69,8 +69,8 @@ func (m *messageMarshaler) Marshal(v interface{}) ([]byte, error) {
 		if err != nil {
 			return nil, err
 		}
-		if _, ok := v.([]interface{}); ok {
-			data := make([]interface{}, 0)
+		if _, ok := v.([]any); ok {
+			data := make([]any, 0)
 			err = json.Unmarshal(dataBytes, &data)
 			if err != nil {
 				return nil, err
@@ -83,7 +83,7 @@ func (m *messageMarshaler) Marshal(v interface{}) ([]byte, error) {
 				return nil, err
 			}
 		} else {
-			data := make(map[string]interface{})
+			data := make(map[string]any)
 			err = json.Unmarshal(dataBytes, &data)
 			if err != nil {
 				return nil, err
@@ -101,8 +101,8 @@ func (m *messageMarshaler) Marshal(v interface{}) ([]byte, error) {
 	return dataBytes, nil
 }
 
-func (m *messageMarshaler) processItem(path []string, item interface{}) {
-	if mapItem, ok := item.(map[string]interface{}); ok {
+func (m *messageMarshaler) processItem(path []string, item any) {
+	if mapItem, ok := item.(map[string]any); ok {
 		for k, v := range mapItem {
 			fieldPath := strings.Join(append(path, k), ".")
 			_, pathIn := m.fields[fieldPath]
@@ -125,7 +125,7 @@ func (m *messageMarshaler) processItem(path []string, item interface{}) {
 				delete(mapItem, k)
 			}
 		}
-	} else if arrayItem, ok := item.([]interface{}); ok {
+	} else if arrayItem, ok := item.([]any); ok {
 		for i := range arrayItem {
 			m.processItem(path, arrayItem[i])
 		}
@@ -134,7 +134,7 @@ func (m *messageMarshaler) processItem(path []string, item interface{}) {
 
 func newMarshaler(req *http.Request, isSSE bool) *messageMarshaler {
 	fieldsQuery := req.URL.Query().Get("fields")
-	fields := make(map[string]interface{})
+	fields := make(map[string]any)
 	exclude := false
 	if fieldsQuery != "" {
 		if strings.HasPrefix(fieldsQuery, "-") {
